@@ -125,16 +125,16 @@ if os.name == 'nt':  # noqa
             'R': '\x1b[2~',  # INSERT
             'S': '\x1b[3~',  # DELETE
             'I': '\x1b[5~',  # PGUP
-            'Q': '\x1b[6~',  # PGDN        
+            'Q': '\x1b[6~',  # PGDN
         }
-        
+
         def __init__(self):
             super(Console, self).__init__()
             self._saved_ocp = ctypes.windll.kernel32.GetConsoleOutputCP()
             self._saved_icp = ctypes.windll.kernel32.GetConsoleCP()
             ctypes.windll.kernel32.SetConsoleOutputCP(65001)
             ctypes.windll.kernel32.SetConsoleCP(65001)
-            # ANSI handling available through SetConsoleMode since Windows 10 v1511 
+            # ANSI handling available through SetConsoleMode since Windows 10 v1511
             # https://en.wikipedia.org/wiki/ANSI_escape_code#cite_note-win10th2-1
             if platform.release() == '10' and int(platform.version().split('.')[2]) > 10586:
                 ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004
@@ -369,7 +369,11 @@ def ask_for_port():
     sys.stderr.write('\n--- Available ports:\n')
     ports = []
     for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
-        sys.stderr.write('--- {:2}: {:20} {!r}\n'.format(n, port, desc))
+        sys.stderr.write(f'--- {n:2}: {port:20}\n')
+        if desc:
+            sys.stderr.write(f'          desc: {desc!s}\n')
+        if hwid:
+            sys.stderr.write(f'          hwid: {hwid!s}\n')
         ports.append(port)
     while True:
         port = raw_input('--- Enter port index or full name: ')
